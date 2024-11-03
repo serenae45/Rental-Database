@@ -1,0 +1,229 @@
+drop database if exists rentalDB;
+create database rentalDB;
+use rentalDB;
+
+create table Person(
+    id char(5) not null primary key,
+    fname varchar(60),
+    lname varchar(60),
+    phone varchar(10));
+
+create table Manager(
+    personID char(5) not null primary key,
+    foreign key (personID) references Person(id) on delete cascade);
+
+create table RentalGroup(
+    codeID char(4) not null primary key,
+    prefNumBeds varchar(2),
+    prefNumBaths varchar(2),
+    maxRent varchar(10),
+    prefParking varchar(5),
+    prefAccess varchar(10),
+    prefAccommodation varchar(10),
+    prefLaundry varchar(30));
+
+create table Renter(
+    personID char(5) not null primary key,
+    studentID varchar(10),
+    programOfStudy varchar(25),
+    yearOfGraduation char(4),
+    rentalGroupCode char(4) not null,
+    foreign key (rentalGroupCode) references RentalGroup(codeID) on delete cascade,
+    foreign key (personID) references Person(id) on delete cascade);
+    
+create table Owner(
+    personID char(5) not null primary key,
+    foreign key (personID) references Person(id) on delete cascade);
+
+create table RentalProperty(
+    id varchar(20) not null primary key,
+    listingDate date,
+    laundryType varchar(30),
+    monthlyCost varchar(10), # please note that the property cost and the monthly rent from the rental agreement are combined into one.
+    parking varchar(5),
+    numBathrooms varchar(2),
+    numBedrooms varchar(2),
+    accessibility varchar(10),
+    street varchar(255),
+	city varchar(255),
+	province char(2),
+	pc char(7),
+    appartmentNum varchar(5),
+	managerID char(5),
+    managerStart date,
+    rentalGroupCode char(4),
+    dateSigned date,
+    endDate date,
+    foreign key (rentalGroupCode) references RentalGroup(codeID),
+	foreign key (managerID) references Manager(personID)); # I did not make the managerID and rentalGroupCode keys 'on delete cascade' because we do not want a RentalProperty entry to delete when a manager or rental group is deleted.
+    
+create table House(
+    propertyID varchar(20) not null primary key,
+    fencedYard varchar(10),
+    detachedOrSemi varchar(10),
+    foreign key (propertyID) references RentalProperty(id) on delete cascade);
+    
+create table Appartment(
+    propertyID varchar(20) not null primary key,
+    floorNum varchar(2),
+    hasElevator varchar(3),
+    foreign key (propertyID) references RentalProperty(id) on delete cascade);
+
+create table Room(
+    propertyID varchar(20) not null primary key,
+    numHousemates varchar(2),
+    hasKitchen varchar(5),
+    foreign key (propertyID) references RentalProperty(id) on delete cascade);
+    
+create table Furnishings(
+    roomID varchar(20) not null,
+    furnishing varchar(250),
+    primary key (roomID, furnishing),
+    foreign key (roomID) references Room(propertyID) on delete cascade);    
+
+create table Owns(
+    ownerID char(5) not null,
+    propertyID varchar(20) not null,
+    primary key (ownerID, propertyID),
+    foreign key (propertyID) references RentalProperty(id) on delete cascade,
+    foreign key (ownerID) references Owner(personID) on delete cascade);
+    
+insert into Person values
+('EI302','Mathew','Child','687424680'),
+('BL201','Andrew','Fallon','964324772'),
+('ST204','Tina','Payne','888665555'),
+('MN664','Tony','Alexander','333445555'),
+('CN967','Sarah','Valor','329844567'),
+('DR883','Julia','Minow','882910037'),
+('RF193','Natalie','Brooks','324667465'),
+('OW255','Sam','Smith','987654321'),
+('ZT526','Taylor','Marlow','689752557'),
+('PL239','Johnathon', 'Puck','192340298'),
+('NW291','Sandra','Bricks','293054719'),
+('HP154','Bridget','Crink','922888182'),
+('VT615','August','Astron','633748501'),
+('EM294','Eloise','Char','492039588'),
+('MU565','Charlotte','Voughn','398200384'),
+('JL117','Charles','Munch','291949093'),
+('PD336','Daniel','Earl','773892871'),
+('OI785','Sam','Brave','372226155'),
+('ST230','Stuart','Trail','091253765'),
+('UR456','Oliver','Bread','976329806'),
+('WR199','Robert','Warrio','657483920'),
+('HY857','Hubart','Flint','998787246'),
+('WX905','William','Acorn','514028765');
+
+insert into Manager VALUES
+('RF193'),
+('ZT526'),
+('OW255'),
+('PL239'),
+('NW291'),
+('HP154');
+
+insert into Owner VALUES
+('VT615'),
+('EM294'),
+('MU565'),
+('JL117'),
+('PD336'),
+('OI785'),
+('ST230'),
+('UR456'),
+('WR199'),
+('HY857'),
+('WX905');
+
+insert into RentalGroup values
+('2839','2','1','2100','yes','no','room','shared'),
+('5556','8','4','6700','yes',null,'house','ensuite'),
+('1221','1','2','1200','no','yes','appartment','ensuite'),
+('1113','3','1','1800','no','no','house','shared'),
+('5786','4','2','2400','yes',null,'appartment','shared'),
+('4331','3','3',null,'no','no','appartment',null),
+('8878','5', null,'4800','yes','no','house','ensuite'),
+('9535','1','1','700','no',null,'room','shared');
+# note that I am assuming that accessibility is a 'yes' or 'no' parameter.
+
+insert into Renter VALUES
+('DR883','20153940','Mathematics','2024','2839'),
+('EI302','20183345','Engineering','2028','5556'),
+('BL201','29432223','English','2027','1221'),
+('ST204','13291343','Psychology','2025','1113'),
+('MN664','11323345','Computing','2025','5786'),
+('CN967','11333923','Linguistics','2027','1221');
+
+insert into RentalProperty VALUES
+('3920439029','2024-01-09','shared','2100','yes','3','1','no','980 Sublime Avenue', 'Kingston', 'ON','K2V9I3', null,null,null,null,null,null),
+('5129395724','2024-02-03','ensuite','7000','yes','5','8',null,'2147 Maryloo Drive', 'Toronto', 'ON','K2L8T6', null,'HP154','2024-01-15','5556','2022-10-31','2024-03-01'),
+('7949382764','2023-11-20','ensuite','800','no','1','1','yes','5289 Marivale Drive', 'Ottawa', 'ON','K2R3U5', null,null,null,'1221','2023-12-18','2024-12-02'),
+('2623948393','2022-12-31','shared','4900','yes','3','3','yes','2348 Crestview Street', 'Toronto', 'ON','K2T7U3', null,'ZT526','2022-11-29',null,null,null),
+('5820345434','2023-10-11','shared','1300','no','1','2','no','1835 Valley Lane', 'Vancouver', 'BC','P3S7J4', null,null,null,null,null,null),
+('1345340138','2023-08-27','ensuite','600','no','1','1','no','3332 Main Street', 'London', 'ON','K8T9V0', null,'NW291','2023-09-10','9535','2023-10-24','2025-01-01'),
+
+('2035829385','2023-02-15','ensuite','1500','yes','2','3',null, '9228 Rainbow Avenue', 'Ottawa', 'ON','K9P7Y6', null, null, null, null, null, null),
+('5327940528','2023-11-22','shared','900','no','2','5','no', '2748 Charlie Drive', 'Kingston', 'ON','K2I4U6', null, null, null, null, null, null),
+('9248394860','2023-08-05','shared','3450','yes','3','6','no', '218 Balance Street', 'Kingston', 'ON','K4J3S4', null, null, null,'8878','2024-01-22','2025-06-30'),
+('1857382915','2024-01-18','ensuite','550','no','1','1','no', null, 'Kingston', 'ON','K6B3V5', null, null, null,null,null,null),
+('7866355281','2023-08-20','shared','990','no','1','2', null, null, 'Toronto', 'ON','K2M2N5', null, null, null,null,null,null),
+('4596873956','2023-05-21','shared','3600','yes','2','3', 'no', '24 Barley Street', 'Vancouver', 'BC','K2L9B5', null, null, null,'5786','2023-06-09','2024-08-31'),
+
+('1947392853','2023-5-25','ensuite','4200','no','3','5', null, '234 Carlswood Avenue', 'Kingston', 'ON','K5R8M9', '8', null, null,null,null,null),
+('9984477364','2023-11-30','shared','3800','no','3','4','no', '32 Sparks Street', 'Kingston', 'ON','K8O9K2', '2', 'PL239', '2023-10-30',null,null,null),
+('2733625511','2022-11-30','ensuite','2200','yes','1','3', null, '99 Slither Road', 'Kanata', 'ON','K4T5N8', '1', null, null, '4331','2024-01-02','2024-12-31'),
+('8838477372','2024-01-29','shared','520','no','1','0','yes', null, 'London', 'ON','K3C4T2', '518', null, null,null,null,null),
+('6577482266','2023-10-20','shared','1000','no','1','2', null, null, 'Barrie', 'ON','K2M2N5', '102', 'RF193', '2023-09-10',null,null,null),
+('2934811625','2023-10-09','ensuite','2600','yes','2','3', 'no', '24 Barley Street', 'Barrie', 'BC','K2L9B5', '3', 'OW255', '2023-10-01',null,null,null);
+
+insert into House values
+('7949382764','no','Semi'),
+('5129395724','yes','Detached'),
+('1345340138','no',null),
+('5820345434','no','Semi'),
+('2623948393',null,'Detached'),
+('3920439029',null,null);
+
+insert into Room VALUES
+('9248394860','2','yes'),
+('5327940528','4','yes'),
+('2035829385','2','no'),
+('1857382915','0','no'),
+('7866355281','1','yes'),
+('4596873956','2','no');
+
+
+insert into Appartment VALUES
+('1947392853','1','yes'),
+('9984477364','2','no'),
+('2733625511','5','yes'),
+('8838477372','1','no'),
+('6577482266','3','no'),
+('2934811625','12','yes');
+
+insert into Furnishings VALUES
+('9248394860', 'dinning table'),
+('9248394860', 'couch'),
+('5327940528', 'bed'),
+('7866355281', 'bookcase'),
+('7866355281', 'sofa'),
+('2035829385', 'chairs');
+
+insert into Owns VALUES
+('VT615','9984477364'),
+('EM294','2623948393'),
+('MU565','1345340138'),
+('JL117','6577482266'),
+('PD336','5129395724'),
+('HY857','8838477372'),
+('OI785','1947392853'),
+('ST230','7866355281'),
+('UR456','3920439029'),
+('WR199','4596873956'),
+('JL117','7949382764'),
+('WR199', '5820345434'),
+('ST230', '2035829385'),
+('PD336', '5327940528'),
+('MU565', '9248394860'),
+('JL117', '1857382915'),
+('EM294', '2733625511'),
+('WX905','2934811625');

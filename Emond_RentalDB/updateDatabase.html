@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="simple.css" type="text/css" rel="stylesheet" >
+</head>
+
+<div id="top">
+    <h1>Rental Property Database</h1>
+</div>
+  
+<ul>
+    <li><a href="rental.html">Rental</a></li>
+    <li><a href="makeConnection.php">Property List</a></li>
+    <li><a class="active" href="#updateDatabase">Update Database</a></li>
+    <li><a href="groups.php">Rental Groups</a></li>
+    <li><a href="avgRent.php">Average Rent</a></li>
+</ul>
+
+<div id="content">
+    <h2>To update your group preferences, please enter your rental group ID below:</h2>
+    <form action="processForm.php" method="post">
+    <input type="text" name="groupID">
+    <br><br>
+    <input type="submit">
+    </form>
+</div>
+</html>

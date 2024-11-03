@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="simple.css" type="text/css" rel="stylesheet" >
+</head>
+
+<div id="top">
+    <h1>Rental Property Database</h1>
+</div>
+  
+<ul>
+    <li><a href="rental.html">Rental</a></li>
+    <li><a href="makeConnection.php">Property List</a></li>
+    <li><a href="updateDatabase.html">Update Database</a></li>
+    <li><a class="active" href="#groups">Rental Groups</a></li>
+    <li><a href="avgRent.php">Average Rent</a></li>
+</ul>
+<div id="content">
+    <form action="groups.php" method="post">
+    <p>Enter the groupID below:</p>
+    <input type="text" name="groupID">
+    <br><br>
+    <input type="submit">
+    </form>
+</div>
+</html>
