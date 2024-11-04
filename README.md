@@ -10,5 +10,5 @@ This is a web application which enables users to access and interact with rental
 
 &emsp; 4. Average Rent Table: Presents a table that shows the average monthly rent for different categories of rental units—houses, apartments, and rooms—organized into three columns.
 
-In this project I turned a previously created ER diagram into a relational schema using SQL. I created a MySQL database named Emond_RentalDB. The application consists of multiple web pages and is designed for user-friendly navigation. Relevant data is extracted by SQL queries and displayed in tables. The site incorporates basic HTML, CSS, and PHP, using PDO for database interactions.
+In this project I turned a previously created ER diagram into a relational schema using SQL. I created a MySQL database named rentalDB. The application consists of multiple web pages and is designed for user-friendly navigation. Relevant data is extracted by SQL queries and displayed in tables. The site incorporates basic HTML, CSS, and PHP, using PDO for database interactions.
 
